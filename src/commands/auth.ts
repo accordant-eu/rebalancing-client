@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { login, loadConfig, saveConfig, clearConfig } from "../client.js";
-import { printOutput, printError, printSuccess, type OutputFormat } from "../output.js";
+import { printOutput, handleCommandError, printSuccess, type OutputFormat } from "../output.js";
 
 export function registerAuthCommands(program: Command): void {
   const auth = program
@@ -31,8 +31,7 @@ export function registerAuthCommands(program: Command): void {
           printSuccess(`Token stored at ~/.rebalancing-client/config.json`);
         }
       } catch (err) {
-        printError(String(err));
-        process.exit(1);
+        handleCommandError(err);
       }
     });
 
@@ -45,8 +44,8 @@ export function registerAuthCommands(program: Command): void {
       const cfg = loadConfig();
       const token = process.env.REBALANCING_API_TOKEN ?? cfg.token;
       if (!token) {
-        printError("Not logged in. Run `rebalancing auth login` or set REBALANCING_API_TOKEN.");
-        process.exit(1);
+        process.stderr.write("Error: Not logged in. Run `rebalancing auth login` or set REBALANCING_API_TOKEN.\n");
+        process.exit(2);  // treat as auth failure
       }
       const data = {
         tenantId: cfg.tenantId ?? "(from env)",

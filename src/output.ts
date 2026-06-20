@@ -3,7 +3,17 @@
  *
  * Default: JSON (machine-readable, agent-friendly).
  * --pretty: human-formatted tables/text for terminal use.
+ *
+ * Exit code scheme (see docs/exit-codes.md):
+ *   0 = success
+ *   1 = general / network error
+ *   2 = auth failure (401)
+ *   3 = not found (404)
+ *   4 = validation / bad request (400)
+ *   5 = server error (5xx)
  */
+
+import { ApiClientError } from "./client.js";
 
 export type OutputFormat = "json" | "pretty";
 
@@ -27,4 +37,30 @@ export function printError(message: string): void {
 
 export function printSuccess(message: string): void {
   process.stdout.write(`${message}\n`);
+}
+
+/**
+ * Map an error to a structured exit code and print to stderr.
+ * Commands should call this instead of `printError(String(err))` + `process.exit(1)`.
+ *
+ * Exit codes:
+ *   0 = success
+ *   1 = general / network error
+ *   2 = auth failure (401)
+ *   3 = not found (404)
+ *   4 = validation / bad request (400)
+ *   5 = server error (5xx)
+ */
+export function handleCommandError(err: unknown): never {
+  if (err instanceof ApiClientError) {
+    const { status } = err;
+    process.stderr.write(`Error: ${err.message}\n`);
+    if (status === 401 || status === 403) process.exit(2);
+    if (status === 404) process.exit(3);
+    if (status === 400 || status === 422) process.exit(4);
+    if (status >= 500) process.exit(5);
+    process.exit(1);
+  }
+  process.stderr.write(`Error: ${String(err)}\n`);
+  process.exit(1);
 }

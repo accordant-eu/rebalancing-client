@@ -5,7 +5,7 @@ import {
   getPortfolioDrift,
   getPortfolioProposals,
 } from "../client.js";
-import { printOutput, printError, type OutputFormat } from "../output.js";
+import { printOutput, handleCommandError, type OutputFormat } from "../output.js";
 
 export function registerPortfolioCommands(program: Command): void {
   const portfolios = program
@@ -31,8 +31,7 @@ export function registerPortfolioCommands(program: Command): void {
           printOutput(data, "json");
         }
       } catch (err) {
-        printError(String(err));
-        process.exit(1);
+        handleCommandError(err);
       }
     });
 
@@ -47,8 +46,7 @@ export function registerPortfolioCommands(program: Command): void {
         const data = await getPortfolio(id);
         printOutput(data, format);
       } catch (err) {
-        printError(String(err));
-        process.exit(1);
+        handleCommandError(err);
       }
     });
 
@@ -88,8 +86,7 @@ export function registerPortfolioCommands(program: Command): void {
           printOutput(data, "json");
         }
       } catch (err) {
-        printError(String(err));
-        process.exit(1);
+        handleCommandError(err);
       }
     });
 
@@ -105,8 +102,7 @@ export function registerPortfolioCommands(program: Command): void {
         const data = await getPortfolioProposals(id, parseInt(opts.limit, 10));
         printOutput(data, format);
       } catch (err) {
-        printError(String(err));
-        process.exit(1);
+        handleCommandError(err);
       }
     });
 }

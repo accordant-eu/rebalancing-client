@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { getLogs } from "../client.js";
-import { printOutput, printError, type OutputFormat } from "../output.js";
+import { printOutput, handleCommandError, type OutputFormat } from "../output.js";
 import type { AuditEventType } from "../types.js";
 
 const VALID_TYPES: AuditEventType[] = [
@@ -55,8 +55,7 @@ export function registerLogsCommands(program: Command): void {
             printOutput(data, "json");
           }
         } catch (err) {
-          printError(String(err));
-          process.exit(1);
+          handleCommandError(err);
         }
       }
     );

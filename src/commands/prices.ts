@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { getPrices } from "../client.js";
-import { printOutput, printError, type OutputFormat } from "../output.js";
+import { printOutput, handleCommandError, type OutputFormat } from "../output.js";
 
 export function registerPricesCommands(program: Command): void {
   program
@@ -22,8 +22,7 @@ export function registerPricesCommands(program: Command): void {
           printOutput(data, "json");
         }
       } catch (err) {
-        printError(String(err));
-        process.exit(1);
+        handleCommandError(err);
       }
     });
 }
