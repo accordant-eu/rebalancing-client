@@ -269,6 +269,15 @@ Items that are nice-to-have but not blockers:
 5. **Webhook / event push:** Long-term, a push model (webhooks or SSE from the engine) would be more efficient than polling. Is that on the engine roadmap?
 6. **Separate operator tool:** When write commands exist, should they live in this client or a separate higher-privilege tool with stricter audit requirements?
 
+## Related
+
+- [docs/ARCHITECTURE.md](./ARCHITECTURE.md) — component architecture, structure, and output contract
+- [docs/TYR-USAGE.md](./TYR-USAGE.md) — Týr usage patterns, heartbeat monitoring, and feature roadmap
+- [docs/decisions/0001-cli-design-and-scope.md](./decisions/0001-cli-design-and-scope.md) — CLI design ADR
+- [rebalancing-engine](https://github.com/accordant-eu/rebalancing-engine) — the engine this client talks to
+- [Engine live-agent vision](https://github.com/accordant-eu/rebalancing-engine/blob/main/docs/architecture/live-agent-vision.md)
+- [Engine roadmap](https://github.com/accordant-eu/rebalancing-engine/blob/main/docs/roadmap/rebalancing-engine-roadmap.md)
+
 ---
 
 © 2026 Johan Hellman. All rights reserved.

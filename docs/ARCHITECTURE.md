@@ -159,7 +159,7 @@ JSON output is deterministic and machine-parseable. `--pretty` output is for hum
 
 ### What is missing for production use
 
-See [docs/INTEGRATION.md](./INTEGRATION.md) for the integration-focused assessment. From a pure architecture perspective, the main gaps are:
+See [docs/INTEGRATION.md](./INTEGRATION.md) for the integration-focused gap assessment and checklist, and [docs/TYR-USAGE.md](./TYR-USAGE.md) for Týr's usage patterns and feature roadmap. From a pure architecture perspective, the main gaps are:
 
 1. **No write/mutation commands** — the engine has mutation endpoints (trigger rebalance, submit cash flow); the client does not expose them yet. Tracked as an open question in BUILD_JOURNEY.md.
 2. **No test coverage** — `--passWithNoTests` scaffolded; no actual tests exist. The output contract invariants are undocumented as runnable assertions.
@@ -191,6 +191,16 @@ Týr's integration pattern is:
 - **Operational triggers:** When write endpoints exist, trigger rebalances or submit cash flows on behalf of the operator.
 
 The client intentionally does not contain orchestration logic. It is a thin, stable I/O surface.
+
+## Related
+
+- [docs/INTEGRATION.md](./INTEGRATION.md) — production gap assessment and Týr integration checklist
+- [docs/TYR-USAGE.md](./TYR-USAGE.md) — Týr usage patterns, feature roadmap, and agent conventions
+- [docs/decisions/0001-cli-design-and-scope.md](./decisions/0001-cli-design-and-scope.md) — CLI design ADR
+- [rebalancing-engine](https://github.com/accordant-eu/rebalancing-engine) — the engine this client talks to
+- [API docs](https://app.rebalancing.accordant.eu/api/docs) — live Swagger UI
+- [Engine architecture overview](https://github.com/accordant-eu/rebalancing-engine/blob/main/docs/architecture/overview.md)
+- [Engine live-agent vision](https://github.com/accordant-eu/rebalancing-engine/blob/main/docs/architecture/live-agent-vision.md)
 
 ---
 
