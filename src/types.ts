@@ -20,6 +20,7 @@ export type DriftStatus = "in_band" | "threshold_breach" | "not_evaluated";
 export interface Portfolio {
   accountId: string;
   tenantId: string;
+  taxJurisdiction?: string;
   modelId: string | null;
   totalValue: number;
   cash: number;
@@ -41,14 +42,15 @@ export interface DriftInstrument {
   thresholdBreach: boolean;
 }
 
-export interface DriftBreakdown {
+export type DriftBreakdown = {
   accountId: string;
   evaluatedAt: string;
-  strategyType: "threshold" | "calendar" | "manual";
-  rebalanceDue: boolean;
-  reason: string | null;
+  strategyType: "threshold" | "calendar" | "manual" | "tax_aware_us";
   driftByInstrument: DriftInstrument[];
-}
+} & (
+  | { rebalanceDue: false }
+  | { rebalanceDue: true; reason: string }
+);
 
 export interface Trade {
   instrumentId: string;
@@ -98,6 +100,25 @@ export interface PricesResponse {
   asOf: string;
 }
 
+export interface PortfolioSummary {
+  asOf: string;
+  meta: {
+    total: number;
+    lastEvaluatedAt: string | null;
+  };
+  driftSummary: {
+    inBand: number;
+    thresholdBreach: number;
+    notEvaluated: number;
+  };
+  totalAum: number;
+  openCircuitBreakers: number;
+  recentExecutions: {
+    last24h: number;
+    last7d: number;
+  };
+}
+
 export interface CashFlow {
   cashFlowId: string;
   direction: "DEPOSIT" | "WITHDRAWAL";
@@ -106,11 +127,9 @@ export interface CashFlow {
   effectiveDate: string;
 }
 
-export interface CircuitBreakerState {
-  status: "OPEN" | "CLOSED" | "HALF_OPEN";
-  reason: string | null;
-  lastTrippedAt: string | null;
-}
+export type CircuitBreakerState =
+  | { status: "CLOSED" }
+  | { status: "OPEN" | "HALF_OPEN"; reason: string; lastTrippedAt: string };
 
 export interface ApiError {
   error: {

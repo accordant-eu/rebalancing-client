@@ -18,6 +18,7 @@ import type {
   ProposalsResponse,
   LogsResponse,
   PricesResponse,
+  PortfolioSummary,
   ApiError,
 } from "./types.js";
 
@@ -145,6 +146,30 @@ export async function getPortfolioProposals(
   return request<ProposalsResponse>(
     `/api/portfolios/${encodeURIComponent(id)}/proposals?limit=${limit}`
   );
+}
+
+export async function getPortfolioSummary(): Promise<PortfolioSummary> {
+  return request<PortfolioSummary>("/api/portfolios/summary");
+}
+
+export async function triggerRebalance(id: string, dryRun: boolean): Promise<unknown> {
+  return request<unknown>(`/api/portfolios/${encodeURIComponent(id)}/trigger-rebalance`, {
+    method: "POST",
+    body: JSON.stringify({ dryRun })
+  });
+}
+
+export async function resetCircuitBreaker(id: string): Promise<unknown> {
+  return request<unknown>(`/api/portfolios/${encodeURIComponent(id)}/circuit-breaker/reset`, {
+    method: "POST"
+  });
+}
+
+export async function submitCashflow(id: string, amount: number, direction: "DEPOSIT" | "WITHDRAWAL"): Promise<unknown> {
+  return request<unknown>(`/api/portfolios/${encodeURIComponent(id)}/cashflows`, {
+    method: "POST",
+    body: JSON.stringify({ amount, direction, expectedSettlementDate: new Date().toISOString() })
+  });
 }
 
 // ── Logs ──────────────────────────────────────────────────────────────────────
