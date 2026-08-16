@@ -65,9 +65,13 @@ rebalancing auth whoami       Show current credentials
 rebalancing auth logout       Clear stored credentials
 
 rebalancing portfolios list                  List all portfolios with drift status
+rebalancing portfolios summary               Aggregate summary across all portfolios
 rebalancing portfolios get <id>              Full portfolio detail
 rebalancing portfolios drift <id>            Drift breakdown per instrument
 rebalancing portfolios proposals <id>        Recent trade proposals [--limit N]
+rebalancing portfolios trigger <id>          Trigger rebalance evaluation [--dry-run]
+rebalancing portfolios reset-breaker <id>    Reset a tripped circuit breaker
+rebalancing portfolios add-cashflow <id> <amount> <direction> Add pending cashflow
 
 rebalancing logs                             Query audit log
   --portfolio <id>                           Filter by portfolio
