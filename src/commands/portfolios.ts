@@ -62,7 +62,7 @@ export function registerPortfolioCommands(program: Command): void {
         if (format === "pretty") {
           console.log(`Portfolio: ${data.accountId}`);
           console.log(`Evaluated: ${data.evaluatedAt}  Strategy: ${data.strategyType}`);
-          console.log(`Rebalance due: ${data.rebalanceDue}${data.reason ? `  Reason: ${data.reason}` : ""}`);
+          console.log(`Rebalance due: ${data.rebalanceDue}${data.rebalanceDue ? `  Reason: ${data.reason}` : ""}`);
           console.log("");
           console.log(
             "Instrument".padEnd(16) +
