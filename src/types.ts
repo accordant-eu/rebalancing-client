@@ -100,6 +100,25 @@ export interface PricesResponse {
   asOf: string;
 }
 
+export interface PortfolioSummary {
+  asOf: string;
+  meta: {
+    total: number;
+    lastEvaluatedAt: string | null;
+  };
+  driftSummary: {
+    inBand: number;
+    thresholdBreach: number;
+    notEvaluated: number;
+  };
+  totalAum: number;
+  openCircuitBreakers: number;
+  recentExecutions: {
+    last24h: number;
+    last7d: number;
+  };
+}
+
 export interface CashFlow {
   cashFlowId: string;
   direction: "DEPOSIT" | "WITHDRAWAL";

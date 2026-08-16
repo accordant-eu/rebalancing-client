@@ -4,6 +4,10 @@ import {
   getPortfolio,
   getPortfolioDrift,
   getPortfolioProposals,
+  getPortfolioSummary,
+  triggerRebalance,
+  resetCircuitBreaker,
+  submitCashflow,
 } from "../client.js";
 import { printOutput, handleCommandError, type OutputFormat } from "../output.js";
 
@@ -11,6 +15,21 @@ export function registerPortfolioCommands(program: Command): void {
   const portfolios = program
     .command("portfolios")
     .description("Portfolio operations");
+
+  portfolios
+    .command("summary")
+    .description("Get aggregate summary across all portfolios")
+    .option("--json", "Output as JSON (default)")
+    .option("--pretty", "Human-readable output")
+    .action(async (opts: { json?: boolean; pretty?: boolean }) => {
+      const format: OutputFormat = opts.pretty ? "pretty" : "json";
+      try {
+        const data = await getPortfolioSummary();
+        printOutput(data, format);
+      } catch (err) {
+        handleCommandError(err);
+      }
+    });
 
   portfolios
     .command("list")
@@ -101,6 +120,51 @@ export function registerPortfolioCommands(program: Command): void {
       try {
         const data = await getPortfolioProposals(id, parseInt(opts.limit, 10));
         printOutput(data, format);
+      } catch (err) {
+        handleCommandError(err);
+      }
+    });
+
+  portfolios
+    .command("trigger <id>")
+    .description("Trigger a rebalance evaluation for a portfolio")
+    .option("--dry-run", "Run in dry-run mode (no trades submitted)")
+    .action(async (id: string, opts: { dryRun?: boolean }) => {
+      try {
+        const data = await triggerRebalance(id, !!opts.dryRun);
+        printOutput(data, "json");
+      } catch (err) {
+        handleCommandError(err);
+      }
+    });
+
+  portfolios
+    .command("reset-breaker <id>")
+    .description("Reset a tripped circuit breaker for a portfolio")
+    .action(async (id: string) => {
+      try {
+        const data = await resetCircuitBreaker(id);
+        printOutput(data, "json");
+      } catch (err) {
+        handleCommandError(err);
+      }
+    });
+
+  portfolios
+    .command("add-cashflow <id> <amount> <direction>")
+    .description("Add a pending cashflow (DEPOSIT or WITHDRAWAL) for a portfolio")
+    .action(async (id: string, amountStr: string, direction: string) => {
+      try {
+        const amount = parseFloat(amountStr);
+        if (isNaN(amount) || amount <= 0) {
+          throw new Error("Amount must be a positive number.");
+        }
+        const dir = direction.toUpperCase();
+        if (dir !== "DEPOSIT" && dir !== "WITHDRAWAL") {
+          throw new Error("Direction must be DEPOSIT or WITHDRAWAL.");
+        }
+        const data = await submitCashflow(id, amount, dir);
+        printOutput(data, "json");
       } catch (err) {
         handleCommandError(err);
       }
