@@ -21,7 +21,7 @@
     "ora": "^9.4.1"
   },
   "devDependencies": {
-    "@types/node": "^26.1.0",
+    "@types/node": "^26.6.6",
     "tsx": "^4.23.15",
     "typescript": "^5.4.0",
     "prettier": "^3.9.10",
